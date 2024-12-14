@@ -1,7 +1,10 @@
 package com.kodigo.springboot.service;
 
+import com.kodigo.springboot.dto.StudentDto;
+import com.kodigo.springboot.dto.StudentDtoMapper;
 import com.kodigo.springboot.entity.Student;
 import com.kodigo.springboot.repository.StudentRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -17,10 +20,24 @@ public class StudentServiceImpl implements IStudentService {
     this.studentRepository = studentRepository;
   }
 
+
   @Override
-  public List<Student> findAllStudents() {
-    return studentRepository.findAll();
+  public List<StudentDto> findAllStudents() {
+
+    List<Student> students = studentRepository.findAll();
+
+    List<StudentDto> studentDtos = new ArrayList<>();
+
+    for (Student student : students) {
+
+      studentDtos.add(StudentDtoMapper.toDto(student));
+
+    }
+
+    return studentDtos;
+
   }
+
 
   @Override
   public Optional<Student> findStudentById(Integer id) {
