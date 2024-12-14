@@ -30,7 +30,11 @@ public class StudentServiceImpl implements IStudentService {
 
     for (Student student : students) {
 
-      studentDtos.add(StudentDtoMapper.toDto(student));
+      Optional<StudentDto> optionalStudentDto = StudentDtoMapper.toDto(student);
+
+      if (optionalStudentDto.isPresent()) {
+        studentDtos.add(optionalStudentDto.get());
+      }
 
     }
 

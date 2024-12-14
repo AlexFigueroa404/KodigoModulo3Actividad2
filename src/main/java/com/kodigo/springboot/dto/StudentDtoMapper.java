@@ -1,18 +1,19 @@
 package com.kodigo.springboot.dto;
 
 import com.kodigo.springboot.entity.Student;
+import java.util.Optional;
 
 public class StudentDtoMapper {
 
 
   private StudentDtoMapper() {
-   throw new UnsupportedOperationException("Esta clase no debe ser instanciada");
+    throw new UnsupportedOperationException("Esta clase no debe ser instanciada");
   }
 
-  public static StudentDto toDto(Student student) {
+  public static Optional<StudentDto> toDto(Student student) {
 
     if (student == null) {
-      return null;
+      return Optional.empty();
     }
 
     StudentDto dto = new StudentDto();
@@ -22,7 +23,7 @@ public class StudentDtoMapper {
     dto.setEmail(student.getEmail());
     dto.setRegistrationDate(student.getRegistrationDate());
 
-    return dto;
+    return Optional.of(dto);
 
 
   }
