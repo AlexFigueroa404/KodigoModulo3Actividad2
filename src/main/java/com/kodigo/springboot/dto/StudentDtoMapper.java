@@ -20,8 +20,10 @@ public class StudentDtoMapper {
 
     dto.setId(student.getId());
     dto.setName(student.getName());
+    dto.setLastName(student.getLastName());
     dto.setEmail(student.getEmail());
     dto.setRegistrationDate(student.getRegistrationDate());
+
 
     return Optional.of(dto);
 
