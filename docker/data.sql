@@ -1,4 +1,4 @@
--- Poblar la tabla Student con 20 registros, con nombres diferentes
+
 INSERT INTO students (first_name, last_name, email, registration_date)
 VALUES
     ('Juan', 'Pérez', 'juan.perez@correo.com', '2024-01-01'),
@@ -121,8 +121,4 @@ VALUES
     ('Esther', 'Molina', 'esther.molina@correo.com', '2024-04-28'),
     ('Víctor', 'Ruiz', 'victor.ruiz@correo.com', '2024-04-29'),
     ('Sofía', 'Ramírez', 'sofia.ramirez@correo.com', '2024-04-30');
-GO
 
-select * from students;
-
-delete  from students;

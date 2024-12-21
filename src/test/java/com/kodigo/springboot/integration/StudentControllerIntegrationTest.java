@@ -28,33 +28,75 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 public class StudentControllerIntegrationTest {
-
 @LocalServerPort
 private int port;
 
 @Autowired
 private TestRestTemplate restTemplate;
 
-@Autowired
-private StudentRepository studentRepository;
-
-private Student student;
+private String baseUrl;
 
 @BeforeEach
 public void setUp() {
-  studentRepository.deleteAll();
-
-  student = new Student();
-  student.setFirstName("John");
-  student.setLastName("Doe");
-  student.setEmail("john.doe@example.com");
-  student.setRegistrationDate(LocalDate.now());
-  studentRepository.save(student);
+  baseUrl = "http://localhost:" + port + "/api/v1/students";
 }
 
-private String createURLWithPort(String uri) {
-  return "http://localhost:" + port + uri;
+@Test
+public void testCreateStudent() {
+  StudentDto studentDto = new StudentDto();
+  studentDto.setFirstName("John");
+  studentDto.setLastName("Doe");
+  studentDto.setEmail("john.doe@example.com");
+  studentDto.setRegistrationDate(LocalDate.now());
+
+  ResponseEntity<StudentDto> response = restTemplate.postForEntity(baseUrl, studentDto, StudentDto.class);
+
+  assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+  StudentDto createdStudent = response.getBody();
+  assertThat(createdStudent).isNotNull();
+  assertThat(createdStudent.getId()).isNotNull();
+  assertThat(createdStudent.getFirstName()).isEqualTo("John");
+  assertThat(createdStudent.getLastName()).isEqualTo("Doe");
+}
+@Test
+public void testGetStudentById() {
+
+  StudentDto studentDto = new StudentDto();
+  studentDto.setFirstName("Jane");
+  studentDto.setLastName("Doe");
+  studentDto.setEmail("jane.doe@example.com");
+  studentDto.setRegistrationDate(LocalDate.now());
+
+  ResponseEntity<StudentDto> createResponse = restTemplate.postForEntity(baseUrl, studentDto, StudentDto.class);
+  StudentDto createdStudent = createResponse.getBody();
+
+  ResponseEntity<StudentDto> getResponse = restTemplate.getForEntity(baseUrl + "/" + createdStudent.getId(), StudentDto.class);
+
+  assertThat(getResponse.getStatusCode().is2xxSuccessful()).isTrue();
+  StudentDto fetchedStudent = getResponse.getBody();
+  assertThat(fetchedStudent).isNotNull();
+  assertThat(fetchedStudent.getId()).isEqualTo(createdStudent.getId());
+  assertThat(fetchedStudent.getFirstName()).isEqualTo("Jane");
+  assertThat(fetchedStudent.getLastName()).isEqualTo("Doe");
 }
 
+
+@Test
+public void testDeleteStudent() {
+  StudentDto studentDto = new StudentDto();
+  studentDto.setFirstName("Emily");
+  studentDto.setLastName("Jones");
+  studentDto.setEmail("emily.jones@example.com");
+  studentDto.setRegistrationDate(LocalDate.now());
+
+  ResponseEntity<StudentDto> createResponse = restTemplate.postForEntity(baseUrl, studentDto, StudentDto.class);
+  StudentDto createdStudent = createResponse.getBody();
+
+  restTemplate.delete(baseUrl + "/" + createdStudent.getId());
+
+  ResponseEntity<StudentDto> getResponse = restTemplate.getForEntity(baseUrl + "/" + createdStudent.getId(), StudentDto.class);
+
+  assertThat(getResponse.getStatusCode().is4xxClientError()).isTrue();
+}
 
 }
