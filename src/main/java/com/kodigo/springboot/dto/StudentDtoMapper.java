@@ -19,7 +19,7 @@ public class StudentDtoMapper {
     StudentDto dto = new StudentDto();
 
     dto.setId(student.getId());
-    dto.setName(student.getName());
+    dto.setFirstName(student.getFirstName());
     dto.setLastName(student.getLastName());
     dto.setEmail(student.getEmail());
     dto.setRegistrationDate(student.getRegistrationDate());
@@ -29,5 +29,21 @@ public class StudentDtoMapper {
 
 
   }
+
+public static Optional<Student> toEntity(StudentDto studentDto) {
+  if (studentDto == null) {
+    return Optional.empty();
+  }
+
+  Student student = new Student();
+  student.setId(studentDto.getId());
+  student.setFirstName(studentDto.getFirstName());
+  student.setLastName(studentDto.getLastName());
+  student.setEmail(studentDto.getEmail());
+  student.setRegistrationDate(studentDto.getRegistrationDate());
+
+
+  return Optional.of(student);
+}
 
 }

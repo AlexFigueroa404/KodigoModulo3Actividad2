@@ -1,5 +1,7 @@
 package com.kodigo.springboot.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,30 +24,23 @@ import lombok.Setter;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "Estudiante")
+@Table(name = "Students")
 public class Student {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "idEstudiante", nullable = false)
-  private Integer id;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+@Column(name = "id")
+private Integer id;
 
-  @Column(name = "nombre", nullable = false, length = 100)
-  private String name;
+@Column(name = "first_name", nullable = false)
+private String firstName;
 
-  @Column(name = "apellido", nullable = false, length = 100)
-  private String lastName;
+@Column(name = "last_name", nullable = false)
+private String lastName;
 
-  @Column(name = "email", nullable = false, length = 100)
-  private String email;
+@Column(name = "email", nullable = false, unique = true)
+private String email;
 
-  @Column(name = "fechaRegistro")
-  private LocalDate registrationDate;
-
-  @OneToMany(mappedBy = "idStudent")
-  private Set<Inscripcion> inscripcions = new LinkedHashSet<>();
-
-  @OneToMany(mappedBy = "idStudent")
-  private Set<Resultado> resultados = new LinkedHashSet<>();
-
+@Column(name = "registration_date", nullable = false)
+private LocalDate registrationDate;
 }

@@ -14,52 +14,13 @@ import org.springframework.stereotype.Service;
 public class StudentServiceImpl implements IStudentService {
 
 
-  private final StudentRepository studentRepository;
+private final StudentRepository studentRepository;
 
-  public StudentServiceImpl(StudentRepository studentRepository) {
-    this.studentRepository = studentRepository;
-  }
-
-
-  @Override
-  public List<StudentDto> findAllStudents() {
-
-    List<Student> students = studentRepository.findAll();
-
-    List<StudentDto> studentDtos = new ArrayList<>();
-
-    for (Student student : students) {
-
-      Optional<StudentDto> optionalStudentDto = StudentDtoMapper.toDto(student);
-
-      if (optionalStudentDto.isPresent()) {
-        studentDtos.add(optionalStudentDto.get());
-      }
-
-    }
-
-    return studentDtos;
-
-  }
+public StudentServiceImpl(StudentRepository studentRepository) {
+  this.studentRepository = studentRepository;
+}
 
 
-  @Override
-  public Optional<Student> findStudentById(Integer id) {
-    return Optional.empty();
-  }
 
-  @Override
-  public Student saveStudent(Student student) {
-    return null;
-  }
 
-  @Override
-  public Student updateStudent(Student student) {
-    return null;
-  }
-
-  @Override
-  public void deleteStudent(Integer id) {
-
-  }
 }

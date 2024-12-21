@@ -1,5 +1,5 @@
 -- Poblar la tabla Student con 20 registros, con nombres diferentes
-INSERT INTO Estudiante (nombre, apellido, email, registrationDate)
+INSERT INTO students (first_name, last_name, email, registration_date)
 VALUES
     ('Juan', 'Pérez', 'juan.perez@correo.com', '2024-01-01'),
     ('María', 'Gómez', 'maria.gomez@correo.com', '2024-01-02'),
@@ -123,92 +123,6 @@ VALUES
     ('Sofía', 'Ramírez', 'sofia.ramirez@correo.com', '2024-04-30');
 GO
 
--- Poblar la tabla Instructor con 4 registros
-INSERT INTO Instructor (nombre, apellido, email, especialidad)
-VALUES
-('Carlos', 'Gómez', 'carlos.gomez@correo.com', 'Programación'),
-('Ana', 'Martínez', 'ana.martinez@correo.com', 'Bases de Datos'),
-('Luis', 'Pérez', 'luis.perez@correo.com', 'Diseño Web'),
-('María', 'Hernández', 'maria.hernandez@correo.com', 'Inteligencia Artificial');
-GO
+select * from students;
 
--- Poblar la tabla Curso con 8 registros (cada instructor tendrá 2 cursos)
-INSERT INTO Curso (nombre, descripcion, fechaInicio, fechaFin, estado, idInstructor)
-VALUES
-('Curso de Java Básico', 'Aprende los fundamentos de Java', '2024-01-01', '2024-03-01', 'activo', 1),
-('Curso de Java Avanzado', 'Desarrolla aplicaciones avanzadas en Java', '2024-04-01', '2024-06-01', 'activo', 1),
-('SQL Básico', 'Domina las consultas básicas en SQL', '2024-01-15', '2024-03-15', 'activo', 2),
-('SQL Avanzado', 'Consultas avanzadas y optimización en SQL', '2024-04-15', '2024-06-15', 'activo', 2),
-('HTML y CSS', 'Diseño de páginas web estáticas', '2024-01-10', '2024-03-10', 'activo', 3),
-('JavaScript Básico', 'Introducción a la programación con JavaScript', '2024-04-10', '2024-06-10', 'activo', 3),
-('Machine Learning Básico', 'Conceptos y algoritmos básicos de ML', '2024-01-20', '2024-03-20', 'activo', 4),
-('Deep Learning Básico', 'Introducción a redes neuronales', '2024-04-20', '2024-06-20', 'activo', 4);
-GO
-
--- Poblar la tabla Inscripción con 240 registros
-INSERT INTO Inscripcion (idEstudiante, idCurso, fechaInscripcion)
-SELECT
-    s.idEstudiante,
-    c.idCurso,
-    DATEADD(DAY, -ABS(CHECKSUM(NEWID())) % 90, GETDATE()) AS fechaInscripcion
-FROM
-    (SELECT idEstudiante FROM Estudiante) AS s
-    CROSS APPLY
-    (SELECT TOP 2 idCurso FROM Curso ORDER BY NEWID()) AS c
-WHERE
-    (SELECT COUNT(*) FROM Inscripcion WHERE idEstudiante = s.idEstudiante) < 2;
-GO
-
--- Poblar la tabla Evaluacion con 40 registros (5 evaluaciones por curso)
-WITH Numbers AS (
-    SELECT 1 AS n
-    UNION ALL
-    SELECT 2
-    UNION ALL
-    SELECT 3
-    UNION ALL
-    SELECT 4
-    UNION ALL
-    SELECT 5
-)
-INSERT INTO Evaluacion (idCurso, nombre, tipo, fecha, puntajeMax)
-SELECT
-    c.idCurso,
-    CONCAT('Evaluación ', n.n),
-    CASE WHEN n.n % 2 = 0 THEN 'Examen' ELSE 'Proyecto' END,
-    DATEADD(DAY, n.n * 7, c.fechaInicio),
-    100.0
-FROM Curso AS c
-         CROSS JOIN Numbers AS n;
-GO
-
--- Poblar la tabla Resultado en función de las inscripciones y evaluaciones
-INSERT INTO Resultado (idEstudiante, idEvaluacion, puntajeObtenido)
-SELECT
-    i.idEstudiante,
-    e.idEvaluacion,
-    ROUND(RAND(CHECKSUM(NEWID())) * 100, 2) AS puntajeObtenido
-FROM Inscripcion AS i
-         JOIN Evaluacion AS e ON i.idCurso = e.idCurso;
-GO
-
-SELECT * FROM Evaluacion;
-SELECT * FROM Resultado;
-SELECT * FROM MaterialEducativo;
-
--- Poblar la tabla MaterialEducativo con 32 registros (4 materiales por curso)
-INSERT INTO MaterialEducativo (idCurso, tipo, url)
-SELECT
-    c.idCurso,
-    CASE
-        WHEN t.n = 1 THEN 'Video'
-        WHEN t.n = 2 THEN 'Documento'
-        WHEN t.n = 3 THEN 'Enlace'
-        ELSE 'PDF'
-        END AS tipo,
-    CONCAT('https://material.elearning/', c.idCurso, '/', t.n) AS url
-FROM Curso AS c
-         CROSS JOIN (VALUES (1), (2), (3), (4)) AS t(n);
-GO
-
-SELECT Resultado
+delete  from students;
