@@ -20,7 +20,43 @@ public StudentServiceImpl(StudentRepository studentRepository) {
   this.studentRepository = studentRepository;
 }
 
+@Override
+public List<StudentDto> findAll() {
+  List<Student> students = studentRepository.findAll();
+  List<StudentDto> studentDtos = new ArrayList<>();
+  for (Student student : students) {
+    StudentDtoMapper.toDto(student).ifPresent(studentDtos::add);
+  }
+  return studentDtos;
+}
 
+@Override
+public Optional<StudentDto> findById(Integer id) {
+  return studentRepository.findById(id).flatMap(StudentDtoMapper::toDto);
+}
+
+@Override
+public Optional<StudentDto> save(StudentDto studentDto) {
+  Student student = StudentDtoMapper.toEntity(studentDto).orElseThrow();
+  Student savedStudent = studentRepository.save(student);
+  return StudentDtoMapper.toDto(savedStudent);
+}
+
+@Override
+public Optional<StudentDto> update(Integer id, StudentDto studentDto) {
+  if (!studentRepository.existsById(id)) {
+    return Optional.empty();
+  }
+  Student student = StudentDtoMapper.toEntity(studentDto).orElseThrow();
+  student.setId(id);
+  Student updatedStudent = studentRepository.save(student);
+  return StudentDtoMapper.toDto(updatedStudent);
+}
+
+@Override
+public void deleteById(Integer id) {
+  studentRepository.deleteById(id);
+}
 
 
 }
